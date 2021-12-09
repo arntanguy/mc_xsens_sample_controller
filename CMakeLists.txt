@@ -19,4 +19,5 @@ add_subdirectory(src)
 set(AROBASE "@")
 configure_file(etc/XsensSampleController.in.yaml "${CMAKE_CURRENT_BINARY_DIR}/etc/XsensSampleController.yaml")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/etc/XsensSampleController.yaml" DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc")
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/etc/XsensPlugin.yaml" DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc/${PROJECT_NAME}/plugins")
 

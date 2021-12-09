@@ -56,3 +56,5 @@ transitions:
 - [XsensSampleController_Initial, OK, XsensSampleController_Initial, Strict]
 # Initial state
 init: XsensSampleController_Initial
+
+Plugins: [XsensPlugin]
