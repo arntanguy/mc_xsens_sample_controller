@@ -60,31 +60,44 @@ init: XsensSampleController_Initial
 Plugins: [XsensPlugin]
 Xsens:
   jvrc1:
-    "PELVIS_S": "Pelvis"
-    "NECK_Y_S": "Neck"
-    "NECK_P_S": "Head"
-    "R_SHOULDER_P_S": "Right Shoulder"
-    "R_SHOULDER_Y_S": "Right Upper Arm"
-    "R_ELBOW_P_S": "Right Forearm"
-    "R_WRIST_Y_S": "Right Hand"
-    "L_SHOULDER_P_S": "Left Shoulder"
-    "L_SHOULDER_Y_S": "Left Upper Arm"
-    "L_ELBOW_P_S": "Left Forearm"
-    "L_WRIST_Y_S": "Left Hand"
-    # "L5": 1
-    # "L3": 2
-    # "T12": 3
-    # "T8": 4
-    # "Right Upper Leg": 15
-    # "Right Lower Leg": 16
-    # "Right Foot": 17
-    # "Right Toe": 18
-    # "Left Upper Leg": 19
-    # "Left Lower Leg": 20
-    # "Left Foot": 21
-    # "Left Toe": 22
-    # "23": 23
-    # "Prop1": 24
-    # "Prop2": 25
-    # "Prop3": 26
-    # "Prop4": 27
+    "PELVIS_S":
+      segment: "Pelvis"
+    "WAIST_R_S":
+      segment: "T8" # Sternum
+    "NECK_P_S":
+      segment: "Head"
+    "R_SHOULDER_P_S":
+      segment: "Right Shoulder" 
+      offset:
+        translation: [0, 0, 0]
+        rotation: [0, 0, 0]
+    "R_SHOULDER_Y_S": 
+      segment: "Right Upper Arm"
+      offset: 
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0] 
+    "R_ELBOW_P_S":
+      segment: "Right Forearm"
+      offset: 
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0] 
+    "R_WRIST_Y_S":
+      segment: "Right Hand"
+      offset: 
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0] 
+    "L_SHOULDER_Y_S":
+      segment: "Left Upper Arm"
+      offset: 
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0] 
+    "L_ELBOW_P_S":
+      segment: "Left Forearm"
+      offset: 
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0] 
+    "L_WRIST_Y_S":
+      segment: "Left Hand"
+      offset: 
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0] 
