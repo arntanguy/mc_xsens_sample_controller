@@ -1,3 +1,4 @@
 add_fsm_state_simple(XsensSampleController_Initial)
+add_fsm_state_simple(XsensRetargetting)
 
 add_fsm_data_directory(data)
