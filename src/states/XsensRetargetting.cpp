@@ -4,6 +4,7 @@
 
 void XsensRetargetting::configure(const mc_rtc::Configuration & config)
 {
+  config("stiffness", stiffness_);
 }
 
 void XsensRetargetting::start(mc_control::fsm::Controller & ctl_)
