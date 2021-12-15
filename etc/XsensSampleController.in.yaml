@@ -23,19 +23,32 @@ robots:
   hrp4:
     module: HRP4Comanoid
     init_pos:
-         translation: [1.0, 0.0, 0.74]
-         rotation: [0.0, 0.0, 3.14]
+         translation: [0.0, 2.0, 0.74]
+         rotation: [0.0, 0.0, 0.0]
+  pepper:
+    module: Pepper
+    init_pos:
+         translation: [0.0, -2.0, 0.74]
+         rotation: [0.0, 0.0, 0.0]
 # General constraints, always on
 constraints:
 - type: contact
 - type: kinematics
   damper: [0.1, 0.01, 0.5] # FIXME mc_rtc not setting damper results in QP fail to run
+  velocityPercent: 0.95
 - type: compoundJoint
 - type: kinematics
   robot: hrp4
-  damper: [0.1, 0.01, 0.5] # FIXME mc_rtc not setting damper results in QP fail to run
+  damper: [0.1, 0.01, 0.5]
+  velocityPercent: 0.95
 - type: compoundJoint
   robot: hrp4
+- type: kinematics
+  robot: pepper
+  damper: [0.1, 0.01, 0.5]
+  velocityPercent: 0.95
+- type: compoundJoint
+  robot: pepper
 # Collision constraint
 collisions:
 - type: collision
@@ -44,6 +57,10 @@ collisions:
   r1: hrp4
   r2: hrp4
   useCommon: true
+- type: collision
+  r1: pepper
+  r2: pepper
+  useCommon: true
 # Initial set of contacts
 contacts: []
 # - r1: jvrc1
@@ -51,6 +68,14 @@ contacts: []
 #   r1Surface: LeftFoot
 #   r2Surface: AllGround
 # - r1: jvrc1
+#   r2: ground
+#   r1Surface: RightFoot
+#   r2Surface: AllGround
+# - r1: hrp4
+#   r2: ground
+#   r1Surface: LeftFoot
+#   r2Surface: AllGround
+# - r1: hrp4
 #   r2: ground
 #   r1Surface: RightFoot
 #   r2Surface: AllGround
@@ -67,14 +92,18 @@ states:
     stiffness: 1000
     offset:
       translation: [0.0, 2.0, 0.0]
-    # offset:
-    #   translation: [2.0, 0.0, 0.0]
-    #   rotation: [0.0, 0.0, 3.14]
+  XsensRetargettingPepper:
+    base: XsensRetargetting 
+    robot: pepper
+    stiffness: 1000
+    offset:
+      translation: [0.0, -2.0, 0.0]
   XsensRetargetting_Demo:
     base: Parallel
     # states: [XsensRetargettingHRP4]
     # states: [XsensRetargettingJVRC1]
-    states: [XsensRetargettingJVRC1, XsensRetargettingHRP4]
+    states: [XsensRetargettingJVRC1, XsensRetargettingHRP4, XsensRetargettingPepper]
+    # states: [XsensRetargettingPepper]
 configs:
   XsensRetargetting:
     stiffness: 1000
@@ -128,18 +157,18 @@ Xsens:
       offset:
         translation: [0,0,0]
         rotation: [1.57, 0, 0]
-    #R_HIP_Y_S:
-    #  segment: "Right Upper Leg"
-    #R_KNEE_S:
-    #  segment: "Right Lower Leg"
-    #R_ANKLE_P_S:
-    #  segment: "Right Foot"
-    #L_HIP_Y_S:
-    #  segment: "Left Upper Leg"
-    #L_KNEE_S:
-    #  segment: "Left Lower Leg"
-    #L_ANKLE_P_S:
-    #  segment: "Left Foot"
+    R_HIP_Y_S:
+      segment: "Right Upper Leg"
+    R_KNEE_S:
+      segment: "Right Lower Leg"
+    R_ANKLE_P_S:
+      segment: "Right Foot"
+    L_HIP_Y_S:
+      segment: "Left Upper Leg"
+    L_KNEE_S:
+      segment: "Left Lower Leg"
+    L_ANKLE_P_S:
+      segment: "Left Foot"
   hrp4:
     body:
       segment: "Pelvis"
@@ -184,15 +213,52 @@ Xsens:
       offset:
         translation: [0,0,0]
         rotation: [1.57, 0, 0]
-    #R_HIP_P_LINK:
-    #  segment: "Right Upper Leg"
-    #R_KNEE_P_LINK:
-    #  segment: "Right Lower Leg"
-    #r_ankle:
-    #  segment: "Right Foot"
-    #L_HIP_P_LINK:
-    #  segment: "Left Upper Leg"
-    #L_KNEE_P_LINK:
-    #  segment: "Left Lower Leg"
-    #l_ankle:
-    #  segment: "Left Foot"
+    R_HIP_P_LINK:
+      segment: "Right Upper Leg"
+    R_KNEE_P_LINK:
+      segment: "Right Lower Leg"
+    r_ankle:
+      segment: "Right Foot"
+    L_HIP_P_LINK:
+      segment: "Left Upper Leg"
+    L_KNEE_P_LINK:
+      segment: "Left Lower Leg"
+    l_ankle:
+      segment: "Left Foot"
+  pepper:
+    Pelvis:
+      segment: "Pelvis"
+    Tibia:
+      segment: "Left Lower Leg"
+    torso:
+      segment: "T8" # Sternum
+    Head:
+      segment: "Head"
+    LShoulder:
+      segment: "Left Shoulder"
+      offset:
+        rotation: [0, 0, 1.57]
+    LBicep:
+      segment: "Left Upper Arm"
+      offset:
+        rotation: [0, 0, 1.57]
+    LElbow:
+      segment: "Left Forearm"
+      offset:
+        rotation: [0, 0, 1.57]
+    l_wrist:
+      segment: "Left Hand"
+      offset:
+        rotation: [0, 0, 1.57]
+    RBicep:
+      segment: "Right Upper Arm"
+      offset:
+        rotation: [0, 0, -1.57]
+    RElbow:
+      segment: "Right Forearm"
+      offset:
+        rotation: [0, 0, -1.57]
+    r_wrist:
+      segment: "Right Hand"
+      offset:
+        rotation: [0, 0, -1.57]
