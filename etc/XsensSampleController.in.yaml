@@ -20,16 +20,30 @@ VerboseStateFactory: false
 robots:
   ground:
     module: env/ground
+  hrp4:
+    module: HRP4Comanoid
+    init_pos:
+         translation: [1.0, 0.0, 0.74]
+         rotation: [0.0, 0.0, 3.14]
 # General constraints, always on
 constraints:
 - type: contact
-#- type: dynamics
-#  damper: [0.1, 0.01, 0.5]
+- type: kinematics
+  damper: [0.1, 0.01, 0.5] # FIXME mc_rtc not setting damper results in QP fail to run
 - type: compoundJoint
+- type: kinematics
+  robot: hrp4
+  damper: [0.1, 0.01, 0.5] # FIXME mc_rtc not setting damper results in QP fail to run
+- type: compoundJoint
+  robot: hrp4
 # Collision constraint
 collisions:
 - type: collision
-  useMinimal: true
+  useCommon: true
+- type: collision
+  r1: hrp4
+  r2: hrp4
+  useCommon: true
 # Initial set of contacts
 contacts: []
 # - r1: jvrc1
@@ -41,22 +55,32 @@ contacts: []
 #   r1Surface: RightFoot
 #   r2Surface: AllGround
 
-# Some options for a specific robot
-jvrc1:
-  posture:
-    stiffness: 1
-    weight: 10
-  ff:
-    stiffness: 2
-    weight: 100
 # Implement some additional text states
-states: {}
+states:
+  XsensRetargettingJVRC1:
+    base: XsensRetargetting 
+    robot: jvrc1
+    stiffness: 1000
+  XsensRetargettingHRP4:
+    base: XsensRetargetting 
+    robot: hrp4
+    stiffness: 1000
+    offset:
+      translation: [0.0, 2.0, 0.0]
+    # offset:
+    #   translation: [2.0, 0.0, 0.0]
+    #   rotation: [0.0, 0.0, 3.14]
+  XsensRetargetting_Demo:
+    base: Parallel
+    # states: [XsensRetargettingHRP4]
+    # states: [XsensRetargettingJVRC1]
+    states: [XsensRetargettingJVRC1, XsensRetargettingHRP4]
 configs:
   XsensRetargetting:
     stiffness: 1000
 # Transitions map
 transitions:
-- [XsensSampleController_Initial, OK, XsensRetargetting, Strict]
+- [XsensSampleController_Initial, OK, XsensRetargetting_Demo, Strict]
 # Initial state
 init: XsensSampleController_Initial
 
@@ -104,15 +128,71 @@ Xsens:
       offset:
         translation: [0,0,0]
         rotation: [1.57, 0, 0]
-    R_HIP_Y_S:
-      segment: "Right Upper Leg"
-    R_KNEE_S:
-      segment: "Right Lower Leg"
-    R_ANKLE_P_S:
-      segment: "Right Foot"
-    L_HIP_Y_S:
-      segment: "Left Upper Leg"
-    L_KNEE_S:
-      segment: "Left Lower Leg"
-    L_ANKLE_P_S:
-      segment: "Left Foot"
+    #R_HIP_Y_S:
+    #  segment: "Right Upper Leg"
+    #R_KNEE_S:
+    #  segment: "Right Lower Leg"
+    #R_ANKLE_P_S:
+    #  segment: "Right Foot"
+    #L_HIP_Y_S:
+    #  segment: "Left Upper Leg"
+    #L_KNEE_S:
+    #  segment: "Left Lower Leg"
+    #L_ANKLE_P_S:
+    #  segment: "Left Foot"
+  hrp4:
+    body:
+      segment: "Pelvis"
+    torso:
+      segment: "T8" # Sternum
+    NECK_P_LINK:
+      segment: "Head"
+    R_SHOULDER_R_LINK:
+      segment: "Right Shoulder"
+    R_SHOULDER_Y_LINK:
+      segment: "Right Upper Arm"
+      offset:
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0]
+    R_ELBOW_P_LINK:
+      segment: "Right Forearm"
+      offset:
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0]
+    r_wrist:
+      segment: "Right Hand"
+      offset:
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0]
+    L_SHOULDER_R_LINK:
+      segment: "Left Shoulder"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    L_SHOULDER_Y_LINK:
+      segment: "Left Upper Arm"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    L_ELBOW_P_LINK:
+      segment: "Left Forearm"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    l_wrist:
+      segment: "Left Hand"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    #R_HIP_P_LINK:
+    #  segment: "Right Upper Leg"
+    #R_KNEE_P_LINK:
+    #  segment: "Right Lower Leg"
+    #r_ankle:
+    #  segment: "Right Foot"
+    #L_HIP_P_LINK:
+    #  segment: "Left Upper Leg"
+    #L_KNEE_P_LINK:
+    #  segment: "Left Lower Leg"
+    #l_ankle:
+    #  segment: "Left Foot"

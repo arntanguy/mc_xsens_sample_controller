@@ -24,4 +24,6 @@ private:
     std::map<std::string, std::unique_ptr<mc_tasks::EndEffectorTask>> tasks_;
     double stiffness_ = 10;
     double weight_ = 1000;
+    std::string robot_{};
+    sva::PTransformd offset_ = sva::PTransformd::Identity();
 };
