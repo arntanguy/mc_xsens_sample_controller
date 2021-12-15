@@ -25,6 +25,11 @@ robots:
     init_pos:
          translation: [0.0, 2.0, 0.74]
          rotation: [0.0, 0.0, 0.0]
+  hrp4cr:
+    module: HRP4CR
+    init_pos:
+         translation: [0.0, 4.0, 0.74]
+         rotation: [0.0, 0.0, 0.0]
   pepper:
     module: Pepper
     init_pos:
@@ -35,18 +40,21 @@ constraints:
 - type: contact
 - type: kinematics
   damper: [0.1, 0.01, 0.5] # FIXME mc_rtc not setting damper results in QP fail to run
-  velocityPercent: 0.95
 - type: compoundJoint
 - type: kinematics
   robot: hrp4
   damper: [0.1, 0.01, 0.5]
-  velocityPercent: 0.95
 - type: compoundJoint
   robot: hrp4
+- type: kinematics
+  robot: hrp4cr
+  damper: [0.1, 0.01, 0.5]
+- type: compoundJoint
+  robot: hrp4cr
 - type: kinematics
   robot: pepper
   damper: [0.1, 0.01, 0.5]
-  velocityPercent: 0.95
+  #velocityPercent: 0.9
 - type: compoundJoint
   robot: pepper
 # Collision constraint
@@ -60,6 +68,10 @@ collisions:
 - type: collision
   r1: pepper
   r2: pepper
+  useCommon: true
+- type: collision
+  r1: hrp4cr
+  r2: hrp4cr
   useCommon: true
 # Initial set of contacts
 contacts: []
@@ -83,30 +95,33 @@ contacts: []
 # Implement some additional text states
 states:
   XsensRetargettingJVRC1:
-    base: XsensRetargetting 
+    base: XsensRetargetting
     robot: jvrc1
     stiffness: 1000
   XsensRetargettingHRP4:
-    base: XsensRetargetting 
+    base: XsensRetargetting
     robot: hrp4
     stiffness: 1000
     offset:
       translation: [0.0, 2.0, 0.0]
   XsensRetargettingPepper:
-    base: XsensRetargetting 
+    base: XsensRetargetting
     robot: pepper
     stiffness: 1000
     offset:
       translation: [0.0, -2.0, 0.0]
+  XsensRetargettingHRP4CR:
+    base: XsensRetargetting
+    robot: hrp4cr
+    stiffness: 1000
+    offset:
+      translation: [0.0, 4.0, 0.0]
   XsensRetargetting_Demo:
     base: Parallel
-    # states: [XsensRetargettingHRP4]
-    # states: [XsensRetargettingJVRC1]
-    states: [XsensRetargettingJVRC1, XsensRetargettingHRP4, XsensRetargettingPepper]
-    # states: [XsensRetargettingPepper]
+    states: [XsensRetargettingJVRC1, XsensRetargettingHRP4, XsensRetargettingPepper, XsensRetargettingHRP4CR]
 configs:
   XsensRetargetting:
-    stiffness: 1000
+    stiffness: 10
 # Transitions map
 transitions:
 - [XsensSampleController_Initial, OK, XsensRetargetting_Demo, Strict]
@@ -224,6 +239,62 @@ Xsens:
     L_KNEE_P_LINK:
       segment: "Left Lower Leg"
     l_ankle:
+      segment: "Left Foot"
+  hrp4cr:
+    BODY:
+      segment: "Pelvis"
+    CHEST_Y_LINK:
+      segment: "T8" # Sternum
+    NECK_P_LINK:
+      segment: "Head"
+    R_SHOULDER_R_LINK:
+      segment: "Right Shoulder"
+    R_SHOULDER_Y_LINK:
+      segment: "Right Upper Arm"
+      offset:
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0]
+    R_ELBOW_P_LINK:
+      segment: "Right Forearm"
+      offset:
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0]
+    R_WRIST_P_LINK:
+      segment: "Right Hand"
+      offset:
+        translation: [0,0,0]
+        rotation: [-1.57, 0, 0]
+    L_SHOULDER_R_LINK:
+      segment: "Left Shoulder"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    L_SHOULDER_Y_LINK:
+      segment: "Left Upper Arm"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    L_ELBOW_P_LINK:
+      segment: "Left Forearm"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    L_WRIST_P_LINK:
+      segment: "Left Hand"
+      offset:
+        translation: [0,0,0]
+        rotation: [1.57, 0, 0]
+    R_HIP_P_LINK:
+      segment: "Right Upper Leg"
+    R_KNEE_P_LINK:
+      segment: "Right Lower Leg"
+    R_ANKLE_R_LINK:
+      segment: "Right Foot"
+    L_HIP_P_LINK:
+      segment: "Left Upper Leg"
+    L_KNEE_P_LINK:
+      segment: "Left Lower Leg"
+    L_ANKLE_R_LINK:
       segment: "Left Foot"
   pepper:
     Pelvis:
